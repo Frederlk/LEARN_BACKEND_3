@@ -17,12 +17,13 @@ export class UsersService {
         user.roles = [role];
         return user;
     }
+
     async getAllUsers() {
         const users = await this.userRepository.findAll({ include: { all: true } });
         return users;
     }
 
-    async getUsersByEmail(email: string) {
+    async getUserByEmail(email: string) {
         const user = await this.userRepository.findOne({ where: { email }, include: { all: true } });
         return user;
     }
@@ -34,13 +35,13 @@ export class UsersService {
             await user.$add("role", role.id);
             return dto;
         }
-        throw new HttpException("User or role not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("Пользователь или роль не найдены", HttpStatus.NOT_FOUND);
     }
 
     async ban(dto: BanUserDto) {
         const user = await this.userRepository.findByPk(dto.userId);
         if (!user) {
-            throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+            throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND);
         }
         user.banned = true;
         user.banReason = dto.banReason;
